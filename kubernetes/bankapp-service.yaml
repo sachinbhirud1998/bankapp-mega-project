@@ -2,14 +2,14 @@ apiVersion: v1
 kind: Service
 metadata:
   name: bankapp-service
-  namespace: bankapp-namespace
+  namespace: bankapp  # Ensure this matches your namespace
   labels:
     app: bankapp
 spec:
   selector:
-    app: bankapp-deploy
+    app: bankapp-deploy  # Make sure this matches the label on your pods
   ports:
-  - protocol: TCP
-    port: 8080
-    targetPort: 8080
-    
+    - protocol: TCP
+      port: 8080  # Expose the service on port 8080
+      targetPort: 8080  # Forward traffic to port 8080 on the pod
+ 

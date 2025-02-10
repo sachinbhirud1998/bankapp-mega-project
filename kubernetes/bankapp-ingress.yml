@@ -2,27 +2,41 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: bankapp-ingress
-  namespace: bankapp-namespace
+  namespace: bankapp  # Namespace remains as 'bankapp'
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"  # Use Let's Encrypt
+    kubernetes.io/ingress.class: "nginx"  # Specify NGINX ingress controller
     nginx.ingress.kubernetes.io/ssl-redirect: "true"  # Force HTTPS
-    cert-manager.io/cluster-issuer: letsencrypt-prod  # Use Let's Encrypt
+    acme.cert-manager.io/http01-edit-in-place: "true"  # Enable HTTP-01 challenge for cert-manager
 spec:
   ingressClassName: nginx
   tls:
-  - hosts:
-    - megaproject.trainwithshubham.com
-    secretName: bankapp-tls-secret  # Cert-Manager will manage this
+    - hosts:
+        - megaproject.trainwithshubham.com  # TLS for this host
+      secretName: bankapp-tls-secret  # Cert-Manager will manage this secret
   rules:
-  - host: megaproject.trainwithshubham.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: bankapp-service
-            port:
-              number: 8080
+    - host: megaproject.trainwithshubham.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: bankapp-service  # Routing traffic to the bankapp-service
+                port:
+                  number: 8080
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: api-service  # Routing traffic to the api-service
+                port:
+                  number: 8081
+          - path: /admin
+            pathType: Prefix
+            backend:
+              service:
+                name: admin-service  # Routing traffic to the admin-service
+                port:
+                  number: 8082
 
