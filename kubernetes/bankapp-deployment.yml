@@ -4,7 +4,7 @@ metadata:
   labels:
     app: bankapp-deploy
   name: bankapp-deploy
-  namespace: bankapp-namespace
+  namespace: bankapp
 spec:
   replicas: 2  # Keep replicas >= 2 for high availability
   selector:
